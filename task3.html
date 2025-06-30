@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Responsive Design</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 32px;
+      color: navy;
+      transition: all 0.3s ease;
+    }
+
+    /* Medium screen (tablet) */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 28px;
+        color: darkorange;
+      }
+    }
+
+    /* Small screen (mobile) */
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 22px;
+        color: darkgreen;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Responsive Design</h1>
+  <p>Resize the window to see the heading size and color change.</p>
+
+</body>
+</html>
