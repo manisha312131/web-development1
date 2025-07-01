@@ -1,43 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Responsive Design</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Advanced Styling and JavaScript</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background: #eef1f5;
+      overflow-x: hidden;
+    }
+
+    .top-decor, .bottom-decor {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      background: #4db6ac;
+      border-radius: 50%;
+      z-index: -1;
+    }
+
+    .top-decor {
+      top: -100px;
+      left: -100px;
+    }
+
+    .bottom-decor {
+      bottom: -100px;
+      right: -100px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 60px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+
+    .illustration {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      width: 120px;
+      opacity: 0.1;
+    }
+
+    h1, h2 {
       text-align: center;
-      padding: 20px;
+      color: #222;
     }
 
-    h1 {
-      font-size: 32px;
-      color: navy;
-      transition: all 0.3s ease;
+    .quiz-buttons, #nextBtn {
+      display: flex;
+      justify-content: center;
+      margin: 10px 0;
+      flex-wrap: wrap;
     }
 
-    /* Medium screen (tablet) */
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 28px;
-        color: darkorange;
+    button {
+      margin: 5px;
+      padding: 10px 25px;
+      font-size: 16px;
+      background-color: #009688;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #00796b;
+    }
+
+    #feedback {
+      text-align: center;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    #jokeBox {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    #jokeIcon {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 10px;
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
       }
-    }
 
-    /* Small screen (mobile) */
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 22px;
-        color: darkgreen;
+      .illustration {
+        display: none;
+      }
+
+      button {
+        width: 100%;
+        margin: 10px 0;
+      }
+
+      .quiz-buttons {
+        flex-direction: column;
+        align-items: center;
       }
     }
   </style>
 </head>
 <body>
+  <div class="top-decor"></div>
+  <div class="bottom-decor"></div>
 
-  <h1>Responsive Design</h1>
-  <p>Resize the window to see the heading size and color change.</p>
+  <div class="container">
+    <img src="https://cdn-icons-png.flaticon.com/512/2721/2721264.png" alt="Web Dev Illustration" class="illustration">
+    
+    <h1>JavaScript Quiz</h1>
+    <div id="quiz">
+      <p id="question">Loading question...</p>
+      <div class="quiz-buttons">
+        <button onclick="checkAnswer(true)">True</button>
+        <button onclick="checkAnswer(false)">False</button>
+      </div>
+      <p id="feedback"></p>
+      <button onclick="nextQuestion()" id="nextBtn">Next Question</button>
+    </div>
 
+    <hr>
+
+    <h2>Get a Random Joke</h2>
+    <button onclick="getJoke()">Fetch Joke</button>
+    <div id="jokeBox">
+      <img id="jokeIcon" src="https://cdn-icons-png.flaticon.com/512/166/166527.png" alt="Smiley Icon">
+      <p id="joke"></p>
+    </div>
+  </div>
+
+  <script>
+    // Quiz Logic
+    const questions = [
+      {
+        question: "JavaScript can manipulate the DOM.",
+        correctAnswer: true
+      },
+      {
+        question: "CSS stands for Computer Style Sheets.",
+        correctAnswer: false
+      },
+      {
+        question: "Media queries help make sites responsive.",
+        correctAnswer: true
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+    const questionEl = document.getElementById("question");
+    const feedbackEl = document.getElementById("feedback");
+    const nextBtn = document.getElementById("nextBtn");
+
+    function loadQuestion() {
+      const current = questions[currentQuestionIndex];
+      questionEl.textContent = current.question;
+      feedbackEl.textContent = '';
+      nextBtn.style.display = 'none';
+    }
+
+    function checkAnswer(answer) {
+      const current = questions[currentQuestionIndex];
+      if (answer === current.correctAnswer) {
+        feedbackEl.textContent = "✅ Correct!";
+        feedbackEl.style.color = "green";
+      } else {
+        feedbackEl.textContent = "❌ Wrong answer.";
+        feedbackEl.style.color = "red";
+      }
+      nextBtn.style.display = 'inline-block';
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
+      loadQuestion();
+    }
+
+    loadQuestion();
+
+    // API Fetch for Joke
+    async function getJoke() {
+      const jokeEl = document.getElementById("joke");
+      const jokeIcon = document.getElementById("jokeIcon");
+      jokeEl.textContent = "Fetching a funny joke... 😂";
+      jokeIcon.style.display = "none";
+
+      try {
+        const response = await fetch("https://icanhazdadjoke.com/", {
+          headers: { Accept: "application/json" }
+        });
+        const data = await response.json();
+        jokeEl.textContent = data.joke;
+        jokeIcon.style.display = "inline";
+      } catch (error) {
+        jokeEl.textContent = "Oops! Couldn't fetch a joke right now.";
+      }
+    }
+  </script>
 </body>
 </html>
